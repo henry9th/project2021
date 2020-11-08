@@ -1,0 +1,31 @@
+[{
+    "name": "Electrician",
+    "short": "Electricians are responsible for inspecting, testing, repairing, installing, and modifying electrical components and systems. Electricians general work at homes, businesses, and construction sites, and generally work as contractors.",
+    "medianSalary": "$55,190"
+}, 
+{
+    "name": "Plumber",
+    "short": "Plumbers are responsible for installing and repairing water systems in residential or commercial buildings. Duties include studying and analyzing blueprints and drawings to identify plumbing and water supply systems to assemble and install products without interfering with existing infrastructure.",
+    "medianSalary": "$53,910"
+},
+{
+    "name": "Web Developer",
+    "short": "Web Developers are responsible for the coding, design and layout of a website according to a company's specifications.",
+    "medianSalary": "$69,430"
+},
+{
+    "name": "Environmental Engineering Technician",
+    "short": "Environmental Engineering Technicians carry out the plans developed by environmental engineers, which may include measuring pollution, operating equipment that cleans waste, keeping records and disposing of hazardous materials.",
+    "medianSalary": "$50,560"
+},
+{
+    "name": "Dental Hygienist",
+    "short": "Dental Hygienists  clean dental patients' teeth and advise them on proper mouth hygiene, need associate degrees.",
+    "medianSalary": "$74,820"
+},
+{
+    "name": "Medical Assistant",
+    "short": "Medical Assistants record patient histories, measure blood pressure, schedule appointments and assist with examinations.",
+    "medianSalary": "$33,610"
+}
+]

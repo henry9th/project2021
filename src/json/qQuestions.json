@@ -1,0 +1,21 @@
+[{
+    "question": "How are you doing today?",
+    "answers": ["Good", "Bad", "Alright"]
+}, 
+{
+    "question": "Do you prefer manual labor or office work?",
+    "answers": ["manual", "office", "either"]
+},
+{
+    "question": "How much time do you want to commit to your career?",
+    "answers": ["fulltime", "partime", "either"]
+},
+{
+    "question": "Are you wiling to study for a license?",
+    "answers": ["yes", "no"]
+},
+{
+    "question": "Do you prefer manual labor or office work?",
+    "answers": ["manual", "office", "either"]
+}
+]
