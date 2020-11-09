@@ -2,6 +2,9 @@ import { createWebHistory, createRouter } from "vue-router";
 import Home from "@/views/Home.vue";
 import About from "@/views/About.vue";
 import Careers from "@/views/Careers.vue";
+import CareerDetails from "@/views/CareerDetails.vue"
+import NotFound from "@/views/NotFound.vue"
+import Login from "@/views/Login.vue"
 
 const routes = [
   {
@@ -19,6 +22,21 @@ const routes = [
     name: "Careers",
     component: Careers,
   },
+  {
+    path: "/careers/:careerName",
+    name: ":CareerName",
+    component: CareerDetails,
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+  },
+  { 
+    path: '/:pathMatch(.*)*', 
+    name: 'not-found', 
+    component: NotFound 
+  }
 ];
 
 const router = createRouter({
