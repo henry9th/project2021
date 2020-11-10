@@ -21,9 +21,6 @@ export default {
   name: 'Home',
   components: {
       Questionnaire
-  },
-  methods: {
-     
   }
 } 
 </script>
