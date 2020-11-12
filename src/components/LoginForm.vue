@@ -1,9 +1,9 @@
 <template>
   <div id="card">
     <h1 class="title" v-if="formType === 'login'">Login</h1>
-    <h1 class="title" v-else>Register</h1>
+    <h1 class="title" v-else-if="!registrationSuccess">Register</h1>
 
-    <div id="login-inputs" v-if="formType === 'login'">
+    <div id="login-form" v-if="formType === 'login'">
       <input
         type="email"
         class="form-control"
@@ -18,9 +18,23 @@
         placeholder="Enter Password"
         v-model="password"
       />
+
+      <p id="error-message">{{ errorMsg }}</p>
+
+      <button
+        v-if="formType === 'login'"
+        type="submit"
+        class="btn btn-primary"
+        @click="loginRequest"
+      >
+        Submit
+      </button>
+      <span class="link" @click="switchForm" v-if="formType === 'login'">
+        Don't have an account?</span
+      >
     </div>
 
-    <div id="register-inputs" v-else>
+    <div id="register-form" v-else-if="!registrationSuccess">
       <input
         type="email"
         class="form-control"
@@ -66,33 +80,25 @@
         <option v-for="career in this.careers" :key="career"> {{ career.name }} </option>
       </select>
 
+      <p id="error-message">{{ errorMsg }}</p>
+
+      <button
+        v-if="formType === 'register'"
+        type="submit"
+        class="btn btn-primary"
+        @click="registerRequest"
+      >
+        Submit
+      </button>
+      <span class="link" @click="switchForm" v-if="formType === 'register'">
+        Already have an account?</span
+      >
     </div>
-
-    <p id="error-message">{{ errorMsg }}</p>
-
-    <button
-      v-if="formType === 'login'"
-      type="submit"
-      class="btn btn-primary"
-      @click="loginRequest"
-    >
-      Submit
-    </button>
-    <button
-      v-if="formType === 'register'"
-      type="submit"
-      class="btn btn-primary"
-      @click="registerRequest"
-    >
-      Submit
-    </button>
-
-    <span class="link" @click="switchForm" v-if="formType === 'login'">
-      Don't have an account?</span
-    >
-    <span class="link" @click="switchForm" v-if="formType === 'register'">
-      Already have an account?</span
-    >
+      
+    <div id="registration-success" v-else> 
+      <h1 class="title">Successful registration! </h1>
+      <p>Please check your email for a verification email. Click the link the email and your account will be verified! </p>
+    </div>
   </div>
 </template>
 
@@ -122,9 +128,17 @@ export default {
             userCareer: this.userCareer
         };
         let res = await axios.post("http://localhost:8081/register", data);
-        console.log(res);
+
+        if (res.status === 200 && res.data === "success") { 
+          // registration was successful 
+          this.registrationSuccess = true;
+          return true;
+        } else {
+          // TODO handle bad registration such as duplicate email 
+          return false; 
+        }
       } else {
-        return;
+        return false;
       }
     },
     async loginRequest() {
@@ -143,6 +157,16 @@ export default {
             password: this.password
         };
         let res = await axios.post("http://localhost:8081/login", data);
+
+        if (res.status === 200 && res.data === "success") { 
+          // log the user in 
+          
+          this.$router.push("/");
+        } else if (res.status === 200 && res.data === "not_verified") { 
+          // notify the user that they need to verify their email 
+
+        }
+
         console.log(res)
     },
     validateForm() {
@@ -188,7 +212,8 @@ export default {
       errorMsg: " ",
       mentorCheck: false,
       careers: Careers,
-      userCareer: ""
+      userCareer: "",
+      registrationSuccess: false, 
     };
   },
 };

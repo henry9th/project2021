@@ -1,15 +1,18 @@
-<template>
-  <Header />
-  <router-view />
+<template id="site">
+    <Header id="header" />
+    <router-view id="site-content" />
+    <Footer id="footer" />
 </template>
 
 <script>
 import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
 
 export default {
   name: 'App',
   components: {
-    Header
+    Header,
+    Footer
   }
 }
 </script>
@@ -22,4 +25,11 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
+html,body {
+  height: 100%;
+  min-height: 100%;
+}
+
+
 </style>

@@ -11,22 +11,33 @@ var jsonParser = bodyParser.json()
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
+const verifyHtmlTemplate = `
+<h1> Thank you for registering account with GGI! </h1>
+
+<p>We need you to verify your email. Please click the link below! </p>
+`;
+
 var transporter; 
-var testAccount; 
+
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+ }
 
 async function main() {
-    testAccount = await nodemailer.createTestAccount();
-
     // create reusable transporter object using the default SMTP transport
     transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false, // true for 465, false for other ports
+        service: 'gmail',
         auth: {
-        user: testAccount.user, // generated ethereal user
-        pass: testAccount.pass, // generated ethereal password
-        },
-    });
+          user: 'ggi.auto.email@gmail.com',
+          pass: 'Password2020!'
+        }
+      });
 }
 
 main().catch(console.error);
@@ -70,12 +81,15 @@ app.post('/register', jsonParser, async function (req, res) {
     console.log("New Registration");
     console.log(req.body);
 
+    var random = makeid(19)
+
     const user = {
         email: req.body.email, 
         password: req.body.password,
         isMentor: req.body.userCareer !== "",
         career: req.body.userCareer,
-        active: false 
+        active: false,
+        verification_code: random
     };
 
     // Try adding the user into the database
@@ -87,12 +101,14 @@ app.post('/register', jsonParser, async function (req, res) {
         }
     });
 
+    var verifyUrl = "<h3> http://localhost:8081/verify?code=" + random + "&email=" + req.body.email + "</h3>"; 
+
     // Send an email for the user to verify 
     let info = await transporter.sendMail({
-        from: 'hyunrae.kim@gmail.com', // sender address
+        from: 'ggi.auto.email@gmail.com', // sender address
         to: user.email, // list of receivers
-        subject: "Please confirm your email", // Subject line
-        html: "<b>Hello world?</b>", // html body
+        subject: "[GGI] Please confirm your email", // Subject line
+        html: verifyHtmlTemplate + verifyUrl
       });
     
     console.log("Message sent: %s", info.messageId);
@@ -107,21 +123,49 @@ app.post('/login', jsonParser, function (req, res) {
     var email = req.body.email; 
     var password = req.body.password; 
 
-    connection.query(`SELECT password FROM users WHERE email = "${email}"`, (err, resp) => {
+    connection.query(`SELECT password, active FROM users WHERE email = "${email}"`, (err, resp) => {
         if(err) {
             throw err;
         } else {
-            console.log(password + " VS " + resp[0].password);
-            console.log(bcrypt.compareSync(password, resp[0].password));
             if (bcrypt.compareSync(password, resp[0].password)) { 
                 // authenticated
-                res.status(200).send("success");
+                if (resp[0].active === 0) { 
+                    // the user has not authenticated yet
+                    res.status(200).send("not_verified");
+                } else { 
+                    res.status(200).send("success");
+                }
             } else { 
                 res.status(401).send("The provided email and password are not valid.")
             }
         }
     });
 });
+
+app.get('/verify', function (req, res) { 
+    // get email and verification code
+    var email = req.query.email;  
+    var code = req.query.code; 
+
+    connection.query(`SELECT verification_code FROM users WHERE email = "${email}"`, (err, resp) => {
+        if(err) {
+            throw err;
+        } else {
+            if (resp[0].verification_code === code) { 
+                connection.query(`UPDATE users SET active = 1 WHERE email = "${email}"`, (err, resp) => {
+                    if(err) {
+                        throw err;
+                    } else {
+                        res.status(200).send("Success! Please go ahead and login!");     
+                    }
+                });
+            } else { 
+                res.status(401).send("The provided verification code is not valid. Please try logging in and requesting a new verification code.")
+            }
+        }
+    });
+});
+
 
 
 var server = app.listen(8081, function () { 
