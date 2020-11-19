@@ -1,6 +1,6 @@
 <template id="site">
     <Header id="header" />
-    <router-view id="site-content" />
+    <router-view />
     <Footer id="footer" />
 </template>
 
@@ -13,6 +13,11 @@ export default {
   components: {
     Header,
     Footer
+  },
+  beforeCreate () {
+    if (this.$cookie.getCookie("user") !== null && typeof this.$cookie.getCookie("user") !== undefined) { 
+      this.$store.dispatch("signin");
+    }
   }
 }
 </script>
@@ -30,6 +35,5 @@ html,body {
   height: 100%;
   min-height: 100%;
 }
-
 
 </style>

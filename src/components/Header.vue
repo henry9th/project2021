@@ -23,9 +23,13 @@
       </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item active">
-          <router-link class="nav-link" to="/login">
+          <router-link class="nav-link" to="/login" v-if="signedIn === 0">
             Login / Register
           </router-link>
+
+          <a id="logout-link" class="nav-link" to="/login" @click="signout" v-else>
+            Sign Out 
+          </a>
         </li>
       </ul>
     </div>
@@ -35,8 +39,24 @@
 <script>
 export default {
   name: "Header",
+  computed: { 
+    signedIn() { 
+      return this.$store.state.signedIn;
+    }
+  },
+  methods: {
+    signout() { 
+      this.$cookie.removeCookie("user");
+      this.$store.dispatch("signout");
+    }
+  }
 };
 </script>
 
 <style scoped>
+
+#logout-link:hover {
+    cursor: pointer;
+}
+
 </style>

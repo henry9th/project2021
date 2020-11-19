@@ -7,19 +7,24 @@
   <div id="paragraph">
       <p> {{ career.short }} </p>
   </div> 
+  
+  <Testimonies />
+
 </template>
 
 <script>
 import Careers from '@/json/careers.json'
+import Testimonies from '@/components/Testimonies.vue'
 
 export default {
   name: 'CareerDetails',
-  props: { 
-
+  components: {
+    Testimonies
   },
   data() {
     return {
-      career: Careers[(this.$router.currentRoute._value.params.careerName).toLowerCase()]
+      career: Careers[(this.$router.currentRoute._value.params.careerName).toLowerCase()],
+      user: null
     }
   },
   methods: {
@@ -31,6 +36,8 @@ export default {
     if (typeof this.career === 'undefined') {
       this.$router.push("/notfound");
     }
+
+    this.user = this.$cookie.getCookie("user");
  }
 } 
 </script>

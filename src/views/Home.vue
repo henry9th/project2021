@@ -3,7 +3,6 @@
     <div id="color-layer"> 
       <span id="welcome-message"> 
         Welcome to GGI. 
-
       </span>
     </div>
   </div>
@@ -53,7 +52,7 @@ html,body {
 }
 
 #questionnaire { 
-  margin-top: 10%;
+  margin-top: 5%;
 }
 
 </style>

@@ -47,6 +47,13 @@
         </small>
 
       <input
+        type="text"
+        class="form-control"
+        placeholder="Enter username"
+        v-model="username"
+      />
+
+      <input
         type="password"
         class="form-control"
         aria-describedby="passwordHelp"
@@ -111,6 +118,7 @@ export default {
   name: "LoginForm",
   methods: {
     switchForm() {
+      console.log(this.$cookie.getCookie('username'))
       if (this.formType === "login") {
         this.formType = "register";
       } else {
@@ -124,6 +132,7 @@ export default {
 
         const data = { 
             email: this.email,
+            username: this.username,
             password: hash,
             userCareer: this.userCareer
         };
@@ -156,18 +165,22 @@ export default {
             email: this.email, 
             password: this.password
         };
-        let res = await axios.post("http://localhost:8081/login", data);
+        let res = await axios.post("http://localhost:8081/login", data, {
+          withCredentials: true,
+          headers: { 'content-type': 'application/json' }
+        });
 
         if (res.status === 200 && res.data === "success") { 
-          // log the user in 
+          this.$cookie.setCookie('user', this.email);          
+          this.$store.dispatch("signin");
           
+          console.log(this.$store.state)
+
           this.$router.push("/");
         } else if (res.status === 200 && res.data === "not_verified") { 
           // notify the user that they need to verify their email 
 
         }
-
-        console.log(res)
     },
     validateForm() {
       if (this.mentorCheck && this.userCareer === "") { 
@@ -207,6 +220,7 @@ export default {
     return {
       formType: "login",
       email: "",
+      username: "",
       password: "",
       confirmPassword: "",
       errorMsg: " ",

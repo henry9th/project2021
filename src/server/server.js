@@ -4,6 +4,8 @@ var mysql = require('mysql');
 var bodyParser = require('body-parser');
 const nodemailer = require("nodemailer");
 var bcrypt = require('bcryptjs');
+var session = require('express-session');
+var moment = require('moment');
 
 // create application/json parser
 var jsonParser = bodyParser.json()
@@ -18,6 +20,17 @@ const verifyHtmlTemplate = `
 `;
 
 var transporter; 
+
+app.use(session({
+    secret: "hyunraes_secret_lol",
+    resave: false, 
+    saveUninitialized: true,
+    cookie: {
+        secure: false,  
+        httpOnly: false,
+        maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year 
+    }
+}));
 
 function makeid(length) {
     var result           = '';
@@ -38,6 +51,14 @@ async function main() {
           pass: 'Password2020!'
         }
       });
+}
+
+function verifyUser(session) { 
+    if (session.username !== undefined && session.username !== null) { 
+        return true; 
+    }
+
+    return false; 
 }
 
 main().catch(console.error);
@@ -74,7 +95,13 @@ app.use(function (req, res, next) {
 });
 
 app.get('/', function (req, res) { 
-    res.send('hello world');
+    if(req.session.page_views){
+        req.session.page_views++;
+        res.send("You visited this page " + req.session.page_views + " times" + " " + req.session.email);
+     } else {
+        req.session.page_views = 1;
+        res.send("Welcome to this page for the first time!");
+     }
 });
 
 app.post('/register', jsonParser, async function (req, res) {
@@ -86,6 +113,7 @@ app.post('/register', jsonParser, async function (req, res) {
     const user = {
         email: req.body.email, 
         password: req.body.password,
+        username: req.body.username,
         isMentor: req.body.userCareer !== "",
         career: req.body.userCareer,
         active: false,
@@ -123,7 +151,7 @@ app.post('/login', jsonParser, function (req, res) {
     var email = req.body.email; 
     var password = req.body.password; 
 
-    connection.query(`SELECT password, active FROM users WHERE email = "${email}"`, (err, resp) => {
+    connection.query(`SELECT password, active, username FROM users WHERE email = "${email}"`, (err, resp) => {
         if(err) {
             throw err;
         } else {
@@ -133,12 +161,26 @@ app.post('/login', jsonParser, function (req, res) {
                     // the user has not authenticated yet
                     res.status(200).send("not_verified");
                 } else { 
+                    req.session.username = resp[0].username;
+                    req.session.save();
+                    console.log(req.session);
                     res.status(200).send("success");
                 }
             } else { 
                 res.status(401).send("The provided email and password are not valid.")
             }
         }
+    });
+});
+
+app.get('/logout', function (req, res) { 
+    req.session.destroy((err) => {
+        if (err) { 
+            res.status(400).send("Unknown error in logging out");
+            return;
+        }
+
+        res.status(200).send("success");
     });
 });
 
@@ -156,6 +198,7 @@ app.get('/verify', function (req, res) {
                     if(err) {
                         throw err;
                     } else {
+                        req.session.email = email;
                         res.status(200).send("Success! Please go ahead and login!");     
                     }
                 });
@@ -166,6 +209,55 @@ app.get('/verify', function (req, res) {
     });
 });
 
+
+app.post('/uploadTestimony', jsonParser, async function (req, res) {
+    if (!verifyUser(req.session)) {
+        res.status(401).send("User not authenticated");
+        return;
+    }
+
+    console.log("New Testimony");
+    console.log(req.body);
+
+    const testimony = {
+        title: req.body.title, 
+        body: req.body.body,
+        author: req.body.author,
+        career: req.body.career,
+        created: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+    };
+
+    // Try adding the testimony into the database
+    connection.query('INSERT INTO testimonies SET ?', testimony, (err, resp) => {
+        if(err) {
+            res.send("failure");
+            throw err;
+        } else { 
+            console.log('Last insert ID:', res.insertId);
+            res.status(200).send("success"); 
+        }
+    });
+});
+
+app.get('/getTestimonies', jsonParser, async function (req, res) {
+    if (!verifyUser(req.session)) {
+        res.status(401).send("User not authenticated");
+        return;
+    }
+
+    var career = req.query.career; 
+
+    // Try adding the testimony into the database
+    connection.query(`SELECT * FROM testimonies WHERE career="${career}"`, (err, resp) => {
+        if(err) {
+            console.log("mysql error");
+            res.send("failure");
+            throw err;
+        } else { 
+            res.status(200).send(resp); 
+        }
+    });
+});
 
 
 var server = app.listen(8081, function () { 
