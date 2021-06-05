@@ -6,6 +6,7 @@ import CareerDetails from "@/views/CareerDetails.vue";
 import NotFound from "@/views/NotFound.vue";
 import Login from "@/views/Login.vue";
 import NewTestimony from "@/views/NewTestimony.vue";
+import Infographics from "@/views/Infographics.vue";
 
 const routes = [
   {
@@ -37,6 +38,11 @@ const routes = [
     path: "/careers/:careerName/new-testimony",
     name: ":CareerName Testimony",
     component: NewTestimony,
+  },
+  {
+    path: "/infographics",
+    name: "Infographics",
+    component: Infographics,
   },
   { 
     path: '/:pathMatch(.*)*', 

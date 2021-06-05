@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light">
-    <router-link class="navbar-brand" to="/"> GGI </router-link>
+    <router-link class="navbar-brand" to="/"> Project 2021 </router-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -16,6 +16,9 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
           <router-link class="nav-link" to="/about"> About </router-link>
+        </li>
+        <li class="nav-item active">
+          <router-link class="nav-link" to="/infographics"> Data </router-link>
         </li>
         <li class="nav-item active">
           <router-link class="nav-link" to="/careers"> Careers </router-link>

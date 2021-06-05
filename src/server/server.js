@@ -164,7 +164,13 @@ app.post('/login', jsonParser, function (req, res) {
                     req.session.username = resp[0].username;
                     req.session.save();
                     console.log(req.session);
-                    res.status(200).send("success");
+
+                    var data = {
+                        message: "success", 
+                        username: resp[0].username
+                    }
+
+                    res.status(200).send(data);
                 }
             } else { 
                 res.status(401).send("The provided email and password are not valid.")
@@ -240,11 +246,6 @@ app.post('/uploadTestimony', jsonParser, async function (req, res) {
 });
 
 app.get('/getTestimonies', jsonParser, async function (req, res) {
-    if (!verifyUser(req.session)) {
-        res.status(401).send("User not authenticated");
-        return;
-    }
-
     var career = req.query.career; 
 
     // Try adding the testimony into the database
@@ -259,6 +260,48 @@ app.get('/getTestimonies', jsonParser, async function (req, res) {
     });
 });
 
+app.get('/getAllCareers', jsonParser, async function (req, res) {
+    connection.query(`SELECT * FROM careers`, (err, resp) => {
+        if(err) {
+            console.log("mysql error");
+            res.send("failure");
+            throw err;
+        } else { 
+            res.status(200).send(resp); 
+        }
+    });
+});
+
+
+app.get('/getBlsData', jsonParser, async function (req, res) {
+    var occCode = req.query.occ_code; 
+    var area = req.query.area; 
+
+    var areaQueryString = "(";
+
+    if(Array.isArray(area)) {
+        for (i = 0; i < area.length; i++) { 
+            if (i === area.length - 1) { 
+                areaQueryString += ("'" + area[i] + "')"); 
+            } else { 
+                areaQueryString += ("'" + area[i] + "',");
+            }
+        }
+    } else { 
+        areaQueryString += "'" + area + "')";
+    }
+
+    // Try adding the testimony into the database
+    connection.query(`SELECT * FROM bls_data WHERE area_title IN ${areaQueryString} AND occ_code="${occCode}"`, (err, resp) => {
+        if(err) {
+            console.log("mysql error");
+            res.send("failure");
+            throw err;
+        } else { 
+            res.status(200).send(resp); 
+        }
+    });
+});
 
 var server = app.listen(8081, function () { 
     var host = server.address().address;

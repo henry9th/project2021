@@ -1,7 +1,7 @@
 <template>
   <div id="card">
     <h1 class="title">Testimonies</h1>
-    <button @click="this.$router.push('/careers/' + career + '/new-testimony');" v-if="this.user !== null && typeof this.user !== undefined" >New</button>
+    <button id="new-button" @click="this.$router.push('/careers/' + career + '/new-testimony');" v-if="this.user !== null && typeof this.user !== undefined" >New</button>
   
     <br/>
     
@@ -61,6 +61,7 @@ export default {
 <style scoped>
 .title { 
     margin-bottom: 5%;
+    display: inline;
 }
 
 #card {
@@ -84,6 +85,10 @@ export default {
 
 .tcard { 
   display: block;
+}
+
+#new-button { 
+  float: right;
 }
 
 </style>

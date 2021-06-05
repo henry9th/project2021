@@ -1,7 +1,7 @@
 <template>
   <div id="card">
     <h3 id="testimony-title"> {{ testimony.title }} </h3>
-    <p id="testimony-body"> {{ testimony.author }} </p>
+    <p class="testimony-info"> {{ testimony.author }} </p> <p class="testimony-info"> {{ (new Date(testimony.created)).toLocaleDateString() }} </p>
     <p id="testimony-body"> {{ testimony.body }} </p>
   </div>
 </template>
@@ -51,4 +51,14 @@ export default {
     margin-top: 10px;
   }
 
+  .testimony-info { 
+    display: inline;
+    margin-right: 3%;
+  }
+
+  #testimony-body { 
+    margin-top: 3%;
+  }
+
 </style>
+            

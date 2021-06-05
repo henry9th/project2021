@@ -1,0 +1,23 @@
+wow emulation 
+
+
+Instruction 1 followed by instruction 2 
+
+Instruction 3 has a problem (such as divide by 0) 
+
+Processor generates fault and gives it to OS 
+
+If the OS does not provide a handle for that fault, then processor might halt 
+
+
+Whenever you invoke a system call, you trap frame ecall goes to kernel and then kernel sees 
+
+sysarm32 - arm NT (Thumb-2) - 32 bit code in ARM is considered ARM-2. Thumb-2 introduces 32-bit instructions that are intermixed with the 16-bit instructions 
+syswow64 - 32-bit ntdll.dll built like wow dll  intell
+
+!dh <address> 
+
+why are these apps being build in 32 
+
+ 
+what registers are being used for specific scenarios 

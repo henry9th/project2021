@@ -2,7 +2,7 @@
   <div id="welcome">
     <div id="color-layer"> 
       <span id="welcome-message"> 
-        Welcome to GGI. 
+        Welcome to Project 2021. 
       </span>
     </div>
   </div>

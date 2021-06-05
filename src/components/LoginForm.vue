@@ -170,8 +170,8 @@ export default {
           headers: { 'content-type': 'application/json' }
         });
 
-        if (res.status === 200 && res.data === "success") { 
-          this.$cookie.setCookie('user', this.email);          
+        if (res.status === 200 && res.data.message === "success") { 
+          this.$cookie.setCookie('user', res.data.username);          
           this.$store.dispatch("signin");
           
           console.log(this.$store.state)

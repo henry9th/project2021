@@ -1,24 +1,39 @@
-# gogetit
+# Project 2021 
 
-## Project setup
-```
-npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Objective
 
-### Compiles and minifies for production
-```
-npm run build
-```
+Provide a platform for young adults that want to pursue careers that do not require a traditional 4-year college degree. Think Glassdoor but for careers like plumbing, electrician, etc. 
 
-### Lints and fixes files
-```
-npm run lint
-```
+For those who plan on not attending a traditional 4-year college, there is often not enough resources or guidance on what to pursue. The platform should aim to do the following
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- Provide a glossary of available careers that do not require higher education
+    - Contain information such as preparation requirements, average salary in different parts of the nation, and other considerations 
+
+- Provide a platform for mentors and mentees so that those curious or interested in pursuing the career have a place to ask questions from those already in the field 
+  
+- A questionnaire that can help point someone to careers that might interest them or fit what requirements they're looking for (ex: short-prep time, good WLB, ...)
+
+
+## Tech Stack 
+
+- Vue3  
+- Node 
+- Express 
+- MySql
+
+
+## Initial Project Setup
+
+1. Clone repository (Install Git if not already installed)
+2. Download MySQL installer from https://dev.mysql.com/downloads/installer/
+3. Select developer option in installer 
+   - You will need to have Python and Visual Studio installed 
+4. MySql server root password: Summer2021
+5. Install Node from https://nodejs.org/en/download/
+
+
+
+## Host Vue web app
+
+1. Within src, run "npm run serve" 
