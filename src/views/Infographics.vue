@@ -35,7 +35,8 @@
   </div>
 
   <apexchart
-    width="500"
+    class="chart"
+    width="70%"
     type="line"
     :options="chartOptions"
     :series="series"
@@ -56,12 +57,12 @@ export default {
     return {
       chartOptions: null,
       series: null,
-      selectedCareers: [],
+      selectedCareers: ["47-2152"],
       selectedCareerTitles: [],
       selectedAreas: ["National"],
       careers: [],
       states: [],
-      data: null
+      data: [] // list of data lists (each list being a occ/year query result)
     };
   },
   methods: {
@@ -108,31 +109,61 @@ export default {
         });
 
         var years = [];
-        this.data.forEach(item => years.push(item.year));
+        this.data[0].forEach(item => {
+          years.push(item.year);
+        });
 
-        var occCodes = []; 
-        this.selectedCareers.forEach(item => occCodes.push(item.occ_code));
+        var series = []; 
+        for(var i = 0; i < this.data.length; i++) { 
+          var dataSeries = this.data[i];
+          var wageData = []; 
+          for (var j = 0; j < dataSeries.length; j++) { 
+            var dataPoint = dataSeries[j];
+            wageData.push(dataPoint.a_median);
+          }
 
-        var separatedData = []; 
-
-        occCodes.forEach(occCode => separatedData.push(this.data.filter(element => { 
-            return element.occ_code === occCode;
-        })));
+          series.push({
+            name: dataSeries[0].area_title,
+            data: wageData
+          });
+        }
 
         this.chartOptions = {
             chart: {
+                type: "line",
                 id: "salary-data",
+                width: '100%'
+            },
+            labels: {
+              show: true,
+              rotate: -45,
+              rotateAlways: false,
+              hideOverlappingLabels: true,
+              showDuplicates: false,
+              trim: false,
+              minHeight: undefined,
+              maxHeight: 120,
+              style: {
+                  colors: [],
+                  fontSize: '12px',
+                  fontFamily: 'Helvetica, Arial, sans-serif',
+                  fontWeight: 400,
+                  cssClass: 'apexcharts-xaxis-label',
+              },
             },
             xaxis: {
-                categories: years,
+              categories: years
             },
+            legend: {
+              position: 'bottom',
+              show: true
+            },
+            markers: { 
+              size: 3
+            }
         };
 
-        console.log(separatedData);
-        this.series = [{
-            name: "series-1",
-            data: separatedData[0].map(item => item.a_median)
-        }];
+        this.series = series;
     }
   },
   beforeMount() {
@@ -149,7 +180,26 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+
+    // Get the default selected career and area (National)
+    axios
+      .get(`http://localhost:8081/getBlsData?occ_code=` + this.selectedCareers[0] +`&area_title=` + this.selectedAreas[0], {
+        withCredentials: true,
+        headers: { "content-type": "application/json" },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log(res.data);
+          this.data.push(res.data);
+          this.updateChart();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
+  mounted() { 
+  }
 };
 </script>
 
@@ -160,6 +210,11 @@ export default {
 
 #paragraph {
   margin: 5% 20%;
+}
+
+.chart {
+  margin-left: 15%;
+  margin-top: 5%;
 }
 </style>
 

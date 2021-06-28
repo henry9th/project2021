@@ -66,8 +66,8 @@ main().catch(console.error);
 var connection = mysql.createConnection({
     host        : 'localhost',
     user        : 'root',
-    password    : 'password',
-    database    : 'gogetit'
+    password    : 'Summer2021',
+    database    : 'project2021'
 });
 
 connection.connect((err) => {
@@ -97,10 +97,10 @@ app.use(function (req, res, next) {
 app.get('/', function (req, res) { 
     if(req.session.page_views){
         req.session.page_views++;
-        res.send("You visited this page " + req.session.page_views + " times" + " " + req.session.email);
+        res.send("You visited this page " + req.session.page_views + " times" + " " + req.session.email + ". You see this = server is up");
      } else {
         req.session.page_views = 1;
-        res.send("Welcome to this page for the first time!");
+        res.send("Welcome to this default server page for the first time! You see this = server is up");
      }
 });
 
@@ -272,8 +272,29 @@ app.get('/getAllCareers', jsonParser, async function (req, res) {
     });
 });
 
-
+// Request provides single occupation and single area 
 app.get('/getBlsData', jsonParser, async function (req, res) {
+    var occCode = req.query.occ_code; 
+    var areaTitle = req.query.area_title; 
+
+    if (occCode == null || areaTitle == null) { 
+        res.status(400).send("Bad parameters were sent")
+        return;
+    }
+
+    // Try adding the testimony into the database
+    connection.query(`SELECT * FROM bls_data WHERE area_title="${areaTitle}" AND occ_code="${occCode}"`, (err, resp) => {
+        if(err) {
+            console.log("mysql error");
+            res.send("failure");
+            throw err;
+        } else { 
+            res.status(200).send(resp); 
+        }
+    });
+});
+
+app.get('/getMultipleBlsData', jsonParser, async function (req, res) {
     var occCode = req.query.occ_code; 
     var area = req.query.area; 
 

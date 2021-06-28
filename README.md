@@ -23,17 +23,24 @@ For those who plan on not attending a traditional 4-year college, there is often
 - MySql
 
 
-## Initial Project Setup
+## Initial Downloads
 
-1. Clone repository (Install Git if not already installed)
+1. Install Git if not already installed
 2. Download MySQL installer from https://dev.mysql.com/downloads/installer/
 3. Select developer option in installer 
    - You will need to have Python and Visual Studio installed 
 4. MySql server root password: Summer2021
 5. Install Node from https://nodejs.org/en/download/
+   
+## Initial Project Setup
+
+1. Clone repository to local machine 
+2. 
 
 
+## Launching the Project
 
-## Host Vue web app
-
-1. Within src, run "npm run serve" 
+1. In a terminal, navigate to src and run "npm run serve" 
+2. In a separate terminal, navigate to src/server and run "node server.js"
+3. Navigate to http://localhost:8080/ (default port) to see project 
+   
